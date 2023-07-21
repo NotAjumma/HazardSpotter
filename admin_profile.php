@@ -1,3 +1,17 @@
+<?php 
+    include('./backend/dbconn.php');
+    include ("./backend/session.php");
+    session_start();
+    $user = $_SESSION['username'];
+    if (!isset($_SESSION['username'])) {
+            header('Location: index.html');
+            } 
+
+    // SQL Select news by news_id
+    $query = "SELECT * FROM admin WHERE username='$user'";
+	$result = mysqli_query($conn, $query) or die ("Error: " . mysqli_error($conn));
+	$row = mysqli_fetch_array($result);
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -176,7 +190,7 @@
             </div>
             <ul class="nav">
               <li class="nav-item">
-                <a href="homepage.php">
+                <a href="dashboard.php">
                   <i class="fas fa-home"></i>
                   <p>Dashboard</p>
                   <!-- <span class="badge badge-count">5</span> -->
@@ -227,7 +241,7 @@
                       </ul>
                     </div>
                   </div>
-                  <form method="post" action="edit_admin_profile_db.php">
+                  <form method="post" action="./backend/db_edit_profile_admin.php">
                     <div class="card-body">
                       <div class="row mt-3">
                         <div class="col-md-6">
@@ -236,9 +250,10 @@
                             <input
                               type="text"
                               class="form-control"
-                              name="name"
+                              name="username"
                               placeholder="username"
-                              value="Hizrian"
+                              value="<?php echo $row['username']; ?>"
+                              readonly
                             />
                           </div>
                         </div>
@@ -250,7 +265,7 @@
                               class="form-control"
                               name="password"
                               placeholder="password"
-                              value="Hizrian"
+                              value="<?php echo $row['password']; ?>"
                             />
                           </div>
                         </div>
@@ -262,7 +277,7 @@
                               class="form-control"
                               name="name"
                               placeholder="Name"
-                              value="Hizrian Bin Azri"
+                              value="<?php echo $row['name']; ?>"
                             />
                           </div>
                         </div>
@@ -274,7 +289,7 @@
                               class="form-control"
                               name="email"
                               placeholder="Email"
-                              value="hello@example.com"
+                              value="<?php echo $row['email']; ?>"
                             />
                           </div>
                         </div>
@@ -286,9 +301,9 @@
                             <input
                               type="text"
                               class="form-control"
-                              value="+62008765678"
+                              value="<?php echo $row['phone']; ?>8"
                               name="phone"
-                              placeholder="Phone"
+                              placeholder="phone"
                             />
                           </div>
                         </div>
@@ -301,10 +316,9 @@
                             <textarea
                               class="form-control"
                               name="address"
-                              placeholder="About Me"
+                              placeholder="Address"
                               rows="3"
-                            >
-A man who hates loneliness</textarea
+                            ><?php echo $row['address']; ?></textarea
                             >
                           </div>
                         </div>
@@ -313,6 +327,7 @@ A man who hates loneliness</textarea
                         <input
                           type="submit"
                           value="Save"
+                          name="save"
                           class="btn btn-success"
                         />
                       </div>
@@ -326,24 +341,24 @@ A man who hates loneliness</textarea
       </div>
     </div>
     <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="./assets/js/core/jquery.3.2.1.min.js"></script>
+    <script src="./assets/js/core/popper.min.js"></script>
+    <script src="./assets/js/core/bootstrap.min.js"></script>
     <!-- jQuery UI -->
-    <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-    <script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+    <script src="./assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="./assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
     <!-- Moment JS -->
-    <script src="../assets/js/plugin/moment/moment.min.js"></script>
+    <script src="./assets/js/plugin/moment/moment.min.js"></script>
     <!-- DateTimePicker -->
-    <script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="./assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
     <!-- Bootstrap Toggle -->
-    <script src="../assets/js/plugin/bootstrap-toggle/bootstrap-toggle.min.js"></script>
+    <script src="./assets/js/plugin/bootstrap-toggle/bootstrap-toggle.min.js"></script>
     <!-- jQuery Scrollbar -->
-    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="./assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
     <!-- Azzara JS -->
-    <script src="../assets/js/ready.min.js"></script>
+    <script src="./assets/js/ready.min.js"></script>
     <!-- Azzara DEMO methods, don't include it in your project! -->
-    <script src="../assets/js/setting-demo.js"></script>
+    <script src="./assets/js/setting-demo.js"></script>
     <script>
       $("#datepicker").datetimepicker({
         format: "MM/DD/YYYY",

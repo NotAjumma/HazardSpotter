@@ -1,3 +1,72 @@
+<?php 
+    include('./backend/dbconn.php');
+    include ("./backend/session.php");
+    session_start();
+    $user = $_SESSION['username'];
+    if (!isset($_SESSION['username'])) {
+            header('Location: index.html');
+            } 
+    
+
+    $query = "SELECT COUNT(*) as total_users FROM user"; // SQL query to count all records in the "user" table
+
+    $result = mysqli_query($conn, $query) or die ("Error: " . mysqli_error($conn)); 
+    // Executing the SQL query using mysqli_query. If there's an error, it will print the error message and stop the script execution.
+
+    $row = mysqli_fetch_assoc($result);
+    $total_users = $row['total_users']; // Fetching the count of total users from the result
+
+    $queryNews = "SELECT COUNT(*) as total_news FROM news"; // SQL query to count all records in the "user" table
+
+    $resultNews = mysqli_query($conn, $queryNews) or die ("Error: " . mysqli_error($conn)); 
+    // Executing the SQL query using mysqli_query. If there's an error, it will print the error message and stop the script execution.
+
+    $rowNews = mysqli_fetch_assoc($resultNews);
+    $total_news = $rowNews['total_news']; // Fetching the count of total users from the result
+
+    $queryTopNews = "SELECT n.news_id, n.title, n.image_url, n.location, COUNT(c.id) AS comment_count
+    FROM news n
+    LEFT JOIN comments c ON n.news_id = c.news_id
+    GROUP BY n.news_id, n.title
+    ORDER BY comment_count DESC
+    LIMIT 5;
+    ";
+
+    $resultTopNews = mysqli_query($conn, $queryTopNews) or die("Error: " . mysqli_error($conn));
+
+    $topNews = mysqli_fetch_all($resultTopNews, MYSQLI_ASSOC);
+
+    $queryTopNewsByLocation = "SELECT n.location, COUNT(n.news_id) AS total_news
+    FROM news n
+    GROUP BY n.location
+    ORDER BY total_news DESC;
+    ";
+
+    $resultTopNewsByLocation = mysqli_query($conn, $queryTopNewsByLocation) or die("Error: " . mysqli_error($conn));
+
+    $topNewsByLocation = mysqli_fetch_all($resultTopNewsByLocation, MYSQLI_ASSOC);
+    
+    // print_r($topNewsByLocation);
+
+    $chartData = array();
+
+    // Loop through the $topNews array and format data for the chart
+    foreach ($topNewsByLocation as $news) {
+        $location = $news['location'];
+        $comment_count = (int)$news['total_news'];
+
+        // Add data to the $chartData array
+        $chartData[] = array($location, (int)$comment_count); // Remove the third value as it was used for annotations
+        $customTicks[] = $location; // Add each location as a custom tick label
+
+    }
+
+    // Convert the PHP array to a JavaScript array for Google Charts
+    $jsArray = json_encode($chartData);
+    $jsTicks = json_encode($customTicks);
+    // print_r($jsArray);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -38,6 +107,16 @@
     <link rel="stylesheet" href="./assets/css/azzara.min.css" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="./assets/css/demo.css" />
+
+    <style>
+      .d-flex:hover{
+        transform: scale(1.07);
+        /* background-color: black; */
+      }
+    </style>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
   </head>
   <body>
     <div class="wrapper">
@@ -232,7 +311,7 @@
 										<div class="col col-stats ml-3 ml-sm-0">
 											<div class="numbers">
 												<p class="card-category">Users</p>
-												<h4 class="card-title">1,294</h4>
+												<h4 class="card-title"><?php echo $total_users ?></h4>
 											</div>
 										</div>
 									</div>
@@ -251,7 +330,7 @@
 										<div class="col col-stats ml-3 ml-sm-0">
 											<div class="numbers">
 												<p class="card-category">News</p>
-												<h4 class="card-title">1303</h4>
+												<h4 class="card-title"><?php echo $total_news ?></h4>
 											</div>
 										</div>
 									</div>
@@ -262,11 +341,11 @@
 					</div>
 					<div class="row">
 						<div class="col-md-8">
-							<div class="card">
+							<div class="card" style="height: 32rem !important;">
 								<div class="card-header">
 									<div class="card-head-row">
-										<div class="card-title">News Statistics</div>
-										<div class="card-tools">
+										<div class="card-title">Total News by location</div>
+										<!-- <div class="card-tools">
 											<a href="#" class="btn btn-info btn-border btn-round btn-sm mr-2">
 												<span class="btn-label">
 													<i class="fa fa-pencil"></i>
@@ -279,12 +358,12 @@
 												</span>
 												Print
 											</a>
-										</div>
+										</div> -->
 									</div>
 								</div>
 								<div class="card-body">
 									<div class="chart-container" style="min-height: 375px">
-										<canvas id="statisticsChart"></canvas>
+										<div id="chart_div"></div>
 									</div>
 									<div id="myChartLegend"></div>
 								</div>
@@ -296,48 +375,31 @@
 									<div class="card-title">Top News</div>
 								</div>
 								<div class="card-body pb-0">
-									<div class="d-flex">
-										<div class="avatar">
-											<img src="./assets/img/logoproduct.svg" alt="..." class="avatar-img rounded-circle">
-										</div>
-										<div class="flex-1 pt-1 ml-2">
-											<h5 class="fw-bold mb-1">CSS</h5>
-											<small class="text-muted">Cascading Style Sheets</small>
-										</div>
-										<div class="d-flex ml-auto align-items-center">
-											<h3 class="text-info fw-bold">+$17</h3>
-										</div>
-									</div>
-									<div class="separator-dashed"></div>
-									<div class="d-flex">
-										<div class="avatar">
-											<img src="./assets/img/logoproduct2.svg" alt="..." class="avatar-img rounded-circle">
-										</div>
-										<div class="flex-1 pt-1 ml-2">
-											<h5 class="fw-bold mb-1">J.CO Donuts</h5>
-											<small class="text-muted">The Best Donuts</small>
-										</div>
-										<div class="d-flex ml-auto align-items-center">
-											<h3 class="text-info fw-bold">+$300</h3>
-										</div>
-									</div>
-									<div class="separator-dashed"></div>
-									<div class="d-flex">
-										<div class="avatar">
-											<img src="./assets/img/logoproduct3.svg" alt="..." class="avatar-img rounded-circle">
-										</div>
-										<div class="flex-1 pt-1 ml-2">
-											<h5 class="fw-bold mb-1">Ready Pro</h5>
-											<small class="text-muted">Bootstrap 4 Admin Dashboard</small>
-										</div>
-										<div class="d-flex ml-auto align-items-center">
-											<h3 class="text-info fw-bold">+$350</h3>
-										</div>
-									</div>
-									<div class="separator-dashed"></div>
-									<div class="pull-in">
-										<canvas id="topProductsChart"></canvas>
-									</div>
+
+                <?php 
+                  foreach ($topNews as $news) {
+                      $news_id = $news['news_id']; // Get the news_id for each news article
+                  ?>
+
+                      <a href="news_comment.php?news_id=<?php echo $news_id; ?>" style="text-decoration: none; color: #575962 !important;" >
+                          <div class="d-flex">
+                              <div class="avatar">
+                                  <img src="<?php echo $news['image_url']; ?>" alt="..." class="avatar-img rounded-circle">
+                              </div>
+                              <div class="flex-1 pt-1 ml-2">
+                                  <h5 class="fw-bold mb-1"><?php echo $news['title']; ?></h5>
+                                  <small class="text-muted"><?php echo $news['location']; ?></small>
+                              </div>
+                              <div class="d-flex ml-auto align-items-center">
+                                  <h3 class="text-info fw-bold" style="font-size: small;"><?php echo $news['comment_count']; ?> comments</h3>
+                              </div>
+                          </div>
+                      </a>
+                      <div class="separator-dashed"></div>
+
+                <?php } ?>
+
+									
 								</div>
 							</div>
 							
@@ -399,7 +461,32 @@
 
 <!-- Azzara JS -->
 <script src="./assets/js/ready.min.js"></script>
+<script type="text/javascript">
+    // Load the Google Charts visualization library
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
 
+    function drawChart() {
+        // Convert the JavaScript array back to a DataTable
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Location');
+        data.addColumn('number', 'Total News');
+        data.addRows(<?php echo $jsArray; ?>);
+
+        // Define chart options
+        var options = {
+            // title: 'Location', // Set the chart title here
+            chartArea: { width: '60%', height: '80%' },
+            hAxis: { title: 'Location', titleTextStyle: { italic: false }, ticks: <?php echo $jsTicks; ?> },
+            vAxis: { title: 'Total News', minValue: 0 },
+            bars: 'vertical'
+        };
+
+        // Instantiate and draw the chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
 
 </body>
 </html>

@@ -6,17 +6,18 @@
     if (!isset($_SESSION['username'])) {
             header('Location: index.html');
             } 
+    $user_id = $_GET['user_id'];	
 
     // SQL Select news by news_id
-    $query = "SELECT * FROM user";
-	$result = mysqli_query($conn, $query) or die ("Error: " . mysqli_error($conn)); 
-  $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $query = "SELECT * FROM user WHERE user_id='$user_id'";
+	$result = mysqli_query($conn, $query) or die ("Error: " . mysqli_error($conn));
+	$row = mysqli_fetch_array($result);
 ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Users</title>
+    <title>Update User: <?php echo $row['name']; ?></title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
@@ -67,7 +68,7 @@
               alt="navbar brand"
               class="navbar-brand"
             /> -->
-            RoadNews
+            HazardSpotter
           </a>
           <button
             class="navbar-toggler sidenav-toggler ml-auto"
@@ -149,7 +150,7 @@
                       >My Profile</a
                     >
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="logout.php">Logout</a>
+                    <a class="dropdown-item" href="./backend/logout.php">Logout</a>
                   </li>
                 </ul>
               </li>
@@ -203,7 +204,7 @@
                   <!-- <span class="badge badge-count">5</span> -->
                 </a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="users-list.php">
                   <i class="fa-solid fa-users fa-lg"></i>
                   <p>User</p>
@@ -218,87 +219,127 @@
       <div class="main-panel">
         <div class="content">
           <div class="page-inner">
-            <div class="page-header">
-              <h4 class="page-title">Users List</h4>
-              <ul class="breadcrumbs">
-                <li class="nav-home">
-                  <a href="dashboard.php">
-                    <i class="flaticon-home"></i>
-                  </a>
-                </li>
-                <li class="separator">
-                  <i class="flaticon-right-arrow"></i>
-                </li>
-                <li class="nav-item">
-                  <a href="users-list.php">Users</a>
-                </li>
-              </ul>
-            </div>
+            <h4 class="page-title">Update User: <?php echo $row['name']; ?>.</h4>
             <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-body">
-                    <?php
-                    if (empty($rows)) {
-                        echo "No users data available";
-                    } else { ?>
-                    <div class="table-responsive">
-                      <table
-                        id="add-row"
-                        class="display table table-striped table-hover"
+              <div class="col-md-8">
+                <div class="card card-with-nav">
+                  <div class="card-header">
+                    <div class="row row-nav-line">
+                      <ul
+                        class="nav nav-tabs nav-line nav-color-secondary"
+                        role="tablist"
                       >
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Contact</th>
-                            <th>IP Address</th>
-                            <th>User Agent</th>
-                            <th style="width: 10%">Action</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <?php 
-                          // print_r($rows);
-                          foreach ($rows as $row) {
-                          ?>
-                          <tr>
-                            <td><?php echo $row['name']; ?></td>
-                            <td><?php echo $row['email'] ?></td>
-                            <td><?php echo $row['contact'] ?></td>
-                            <td><?php echo $row['ip_address'] ?></td>
-                            <td><?php echo $row['user_agent'] ?></td>
-                             <td>
-                              <div class="form-button-action">
-                                <a
-                                  href="update_user.php?user_id=<?php echo $row['user_id']; ?>"
-                                  data-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                                >
-                                  <i class="fa fa-edit"></i>
-                                </a>
-                                <a
-                                  href="./backend/db_delete_user.php?user_id=<?php echo $row['user_id']; ?>"
-                                  data-toggle="tooltip"
-                                  onclick="return confirm('Are you sure you want to delete this user ?');"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                                >
-                                  <i class="fa fa-times"></i>
-                                </a>
-                              </div>
-                            </td>
-                          </tr>
-                          <?php }?>
-                        </tbody>
-                      </table>
+                        <li class="nav-item">
+                          <a
+                            class="nav-link"
+                            data-toggle="tab"
+                            href="#profile"
+                            role="tab"
+                            aria-selected="false"
+                            >News Details</a
+                          >
+                        </li>
+                      </ul>
                     </div>
-                    <?php } ?>
                   </div>
+                  <form method="post" action="./backend/db_update_user.php">
+                    <div class="card-body">
+                      <!-- <div class="row mt-3">
+                        <div style="display: flex; justify-content: center;" class="form-group form-group-default">
+                        <img style="height: 19rem;" src="<?php echo $row['image_url'];?>" />
+                            </div>
+                      </div> -->
+                      <div class="row mt-3">
+                        <div class="col-md-6">
+                          <div class="form-group form-group-default">
+                            <label>Name</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="name"
+                              placeholder="name"
+                              value="<?php echo $row['name']; ?>"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group form-group-default">
+                            <label>Email</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="email"
+                              placeholder="email"
+                              value="<?php echo $row['email']; ?>"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group form-group-default">
+                            <label>Phone</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="contact"
+                              placeholder="phone"
+                              value="<?php echo $row['contact']; ?>"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group form-group-default">
+                            <label>Ip Address</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="Ip Address"
+                              value="<?php echo $row['ip_address']; ?>"
+                              readonly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-md-4">
+                          <div class="form-group form-group-default">
+                            <label>User Agent</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="<?php echo $row['user_agent']; ?>"
+                              name="reporter"
+                              placeholder="reporter"
+                              readonly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <!-- <div class="row mt-3">
+                        <div class="col-md-4">
+                          <div class="form-group form-group-default"   style="width: 50rem   !important;">
+                            <label>Image url</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              value="<?php echo $row['image_url']; ?>"
+                              name="image_url"
+                              placeholder="image url"
+                            />
+                          </div>
+                        </div>
+                      </div> -->
+                        <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
+                     
+                      <div class="text-right mt-3 mb-3">
+                        <input
+                          type="submit"
+                          value="Save"
+                          name="save"
+                          class="btn btn-success"
+                        />
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -307,77 +348,27 @@
       </div>
     </div>
     <!--   Core JS Files   -->
-    <script src="./assets/js/core/jquery.3.2.1.min.js"></script>
-    <script src="./assets/js/core/popper.min.js"></script>
-    <script src="./assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
     <!-- jQuery UI -->
-    <script src="./assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-    <script src="./assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+    <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+    <!-- Moment JS -->
+    <script src="../assets/js/plugin/moment/moment.min.js"></script>
+    <!-- DateTimePicker -->
+    <script src="../assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js"></script>
     <!-- Bootstrap Toggle -->
-    <script src="./assets/js/plugin/bootstrap-toggle/bootstrap-toggle.min.js"></script>
+    <script src="../assets/js/plugin/bootstrap-toggle/bootstrap-toggle.min.js"></script>
     <!-- jQuery Scrollbar -->
-    <script src="./assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <!-- Datatables -->
-    <script src="./assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
     <!-- Azzara JS -->
-    <script src="./assets/js/ready.min.js"></script>
+    <script src="../assets/js/ready.min.js"></script>
     <!-- Azzara DEMO methods, don't include it in your project! -->
-    <script src="./assets/js/setting-demo.js"></script>
+    <script src="../assets/js/setting-demo.js"></script>
     <script>
-      $(document).ready(function () {
-        $("#basic-datatables").DataTable({});
-
-        $("#multi-filter-select").DataTable({
-          pageLength: 5,
-          initComplete: function () {
-            this.api()
-              .columns()
-              .every(function () {
-                var column = this;
-                var select = $(
-                  '<select class="form-control"><option value=""></option></select>'
-                )
-                  .appendTo($(column.footer()).empty())
-                  .on("change", function () {
-                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                    column
-                      .search(val ? "^" + val + "$" : "", true, false)
-                      .draw();
-                  });
-
-                column
-                  .data()
-                  .unique()
-                  .sort()
-                  .each(function (d, j) {
-                    select.append(
-                      '<option value="' + d + '">' + d + "</option>"
-                    );
-                  });
-              });
-          },
-        });
-
-        // Add Row
-        $("#add-row").DataTable({
-          pageLength: 5,
-        });
-
-        var action =
-          '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-        $("#addRowButton").click(function () {
-          $("#add-row")
-            .dataTable()
-            .fnAddData([
-              $("#addName").val(),
-              $("#addPosition").val(),
-              $("#addOffice").val(),
-              action,
-            ]);
-          $("#addRowModal").modal("hide");
-        });
+      $("#datepicker").datetimepicker({
+        format: "MM/DD/YYYY",
       });
     </script>
   </body>
