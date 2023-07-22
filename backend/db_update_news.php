@@ -14,8 +14,9 @@ if(isset($_POST['save'])){
 	$date = $_POST['date'];
 	$description = $_POST['description'];
 	$reporter = $_POST['reporter'];
+	$image_url = $_POST['image_url'];
 	
-	$sql= "UPDATE news SET title='$title', location='$location', date='$date', description='$description', reporter_name='$reporter'
+	$sql= "UPDATE news SET title='$title', location='$location', date='$date', description='$description', reporter_name='$reporter', image_url='$image_url'
             WHERE news_id='$news_id'";
            
     $result = mysqli_query($conn, $sql);

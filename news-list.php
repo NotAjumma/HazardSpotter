@@ -338,6 +338,20 @@ require_once "./backend/dbconn.php";
                                     />
                                   </div>
                                 </div>
+                                <div class="col-sm-12">
+                                  <div class="form-group form-group-default">
+                                    <label>Image Url</label>
+                                    <input
+                                      name="image_url"
+                                      id="image_url"
+                                      type="text"
+                                      class="form-control"
+                                      placeholder="image_url"
+                                      required
+
+                                    />
+                                  </div>
+                                </div>
                               </div>
                             
                           </div>

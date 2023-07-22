@@ -67,7 +67,7 @@
               alt="navbar brand"
               class="navbar-brand"
             /> -->
-            RoadNews
+            HazardSpotter
           </a>
           <button
             class="navbar-toggler sidenav-toggler ml-auto"
@@ -251,7 +251,7 @@
                           <tr>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Contact</th>
+                            <!-- <th>Contact</th> -->
                             <th>IP Address</th>
                             <th>User Agent</th>
                             <th style="width: 10%">Action</th>
@@ -266,7 +266,7 @@
                           <tr>
                             <td><?php echo $row['name']; ?></td>
                             <td><?php echo $row['email'] ?></td>
-                            <td><?php echo $row['contact'] ?></td>
+                            <!-- <td><?php echo $row['contact'] ?></td> -->
                             <td><?php echo $row['ip_address'] ?></td>
                             <td><?php echo $row['user_agent'] ?></td>
                              <td>

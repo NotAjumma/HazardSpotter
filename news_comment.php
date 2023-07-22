@@ -384,8 +384,9 @@
                                     <div class="card-header" style="background-image: url('../assets/img/blogpost.jpg')">
                                         <div class="user-profile text-center" style="color: #ffffff;">
                                             <div class="name" style="font-size: 1rem;"><?php echo $rowUser['name']; ?></div>
-                                            <div class="job" style="color: #ffffff;"><?php echo $rowUser['contact']; ?></div>
+                                            <div class="job" style="color: #ffffff;"><?php echo $rowUser['email']; ?></div>
                                             <div class="desc"><?php echo calculateTimeAgo($row['date']); ?></div>
+                                            <!-- <div class="desc"><?php echo $row['date']; ?></div> -->
                                     
                                             <!-- <div class="view-profile">
                                                 <a href="#" class="btn btn-secondary btn-block">View Full Profile</a>

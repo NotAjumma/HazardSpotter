@@ -274,7 +274,7 @@
                             />
                           </div>
                         </div>
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                           <div class="form-group form-group-default">
                             <label>Phone</label>
                             <input
@@ -285,7 +285,7 @@
                               value="<?php echo $row['contact']; ?>"
                             />
                           </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-6">
                           <div class="form-group form-group-default">
                             <label>Ip Address</label>

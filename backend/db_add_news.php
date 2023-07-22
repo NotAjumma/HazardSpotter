@@ -13,9 +13,10 @@ if(isset($_POST['add'])){
 	$date = $_POST['date'];
 	$description = $_POST['description'];
 	$reporter = $_POST['reporter'];
+	$image_url = $_POST['image_url'];
 	
-	$sql= "INSERT INTO news (title, location, date, description, reporter_name)
-           VALUES ('$title', '$location', '$date', '$description', '$reporter')";
+	$sql= "INSERT INTO news (title, location, date, description, reporter_name, image_url)
+           VALUES ('$title', '$location', '$date', '$description', '$reporter', '$image_url')";
     $result = mysqli_query($conn, $sql);
 	if(!$result){
 	 // Jump to indexwrong page

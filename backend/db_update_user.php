@@ -11,10 +11,10 @@ if(isset($_POST['save'])){
 	$user_id = $_POST['user_id'];
 	$name = $_POST['name'];
 	$email = $_POST['email'];
-	$contact = $_POST['contact'];
+	// $contact = $_POST['contact'];
 	
 	
-	$sql= "UPDATE user SET name='$name', email='$email', contact='$contact'
+	$sql= "UPDATE user SET name='$name', email='$email'
             WHERE user_id='$user_id'";
            
     $result = mysqli_query($conn, $sql);

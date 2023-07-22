@@ -67,7 +67,8 @@
               alt="navbar brand"
               class="navbar-brand"
             /> -->
-            RoadNews
+                        HazardSpotter
+
           </a>
           <button
             class="navbar-toggler sidenav-toggler ml-auto"
